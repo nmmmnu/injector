@@ -31,6 +31,16 @@ class Injector{
 	}
 
 
+	function callMethod($instance, $method){
+		$args = array();
+		foreach(self::getDependencyRequirements($instance, $method) as $arg){
+			$args[] = $this->getDependency($arg);
+		}
+
+		return call_user_func_array( array($instance, $method), $args);
+	}
+
+
 	private function getDependency($name){
 		foreach($this->_specifications as $injectorSpecs){
 			$provider = $injectorSpecs->get($name);

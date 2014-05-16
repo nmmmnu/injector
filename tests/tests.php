@@ -29,6 +29,11 @@ class bla{
 	function __construct($host, $port){
 		printf("%s::__construct('%s', %d);\n", __CLASS__, $host, $port);
 	}
+
+	function someMethod($port, $host){
+		printf("%s::someMethod('%s', %d);\n", __CLASS__, $host, $port);
+		return 123;
+	}
 }
 
 // =============================================
@@ -55,4 +60,4 @@ $bla = $injector->provide(__NAMESPACE__ . "\\" . "bla");
 
 assert($bla->name == 5);
 
-
+assert($injector->callMethod($bla, "someMethod") == 123);
