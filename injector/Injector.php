@@ -5,7 +5,13 @@ namespace injector;
 use \ReflectionClass;
 use \ReflectionMethod;
 
-
+/**
+ * Dependency Injection
+ *
+ * Inject dependency into:
+ * - constructor, e.g. instanciate new class
+ * - method, e.g. call the method of some object
+ */
 class Injector{
 	const constructor = "__construct";
 
@@ -14,11 +20,26 @@ class Injector{
 	private $_singletons = array();
 
 
+	/**
+	 * constructor
+	 *
+	 * construct new Injector
+	 *
+	 * @param array $specifications array of InjectorConfiguration objects
+	 *
+	 */
 	function __construct(array $specifications = array()){
 		$this->_specifications = $specifications;
 	}
 
-
+	/**
+	 * Lazi constructor call,
+	 *
+	 * e.g. instanciate new object
+	 *
+	 * @param string $classname name of the class
+	 *
+	 */
 	function provide($classname){
 		$args = array();
 		foreach(self::getDependencyRequirements($classname) as $arg){
@@ -31,6 +52,13 @@ class Injector{
 	}
 
 
+	/**
+	 * Lazi method call
+	 *
+	 * @param object $instance instance of a class
+	 * @param string $method method to be called
+	 *
+	 */
 	function callMethod($instance, $method){
 		$args = array();
 		foreach(self::getDependencyRequirements($instance, $method) as $arg){

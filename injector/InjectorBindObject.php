@@ -1,11 +1,25 @@
 <?
 namespace injector;
 
+
+/**
+ * InjectorBind to Object
+ *
+ * the object is later re-evaluated
+ *
+ */
 class InjectorBindObject implements InjectorBind{
 	private $_classname;
 	private $_singleton;
 
 
+	/**
+	 * constructor
+	 *
+	 * @param string $classname name of the class
+	 * @param boolean $singleton
+	 *
+	 */
 	function __construct($classname, $singleton = true){
 		$this->_classname = $classname;
 		$this->_singleton = $singleton;
