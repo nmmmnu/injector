@@ -1,7 +1,7 @@
 <?
 namespace injector;
 
-class InjectorSpecFactory implements InjectorSpec{
+class InjectorBindFactory implements InjectorBind{
 	private $_callable;
 	private $_singleton;
 

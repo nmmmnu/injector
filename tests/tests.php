@@ -33,26 +33,26 @@ class bla{
 
 // =============================================
 
-function TestInjectorSpec(InjectorSpec $spec, $expect, $singleton){
+function TestInjectorBind(InjectorBind $spec, $expect, $singleton){
 	printf("Testing %s...\n", get_class($spec));
 
 	assert($spec->provide()     == $expect);
 	assert($spec->isSingleton() == $singleton);
 }
 
-TestInjectorSpec(new InjectorSpecValue(5), 5, false);
-TestInjectorSpec(new InjectorSpecObject("bla"), "bla", true);
-TestInjectorSpec(new InjectorSpecFactory(function(){ return 5; }), 5, true);
+TestInjectorBind(new InjectorBindValue(5), 5, false);
+TestInjectorBind(new InjectorBindObject("bla"), "bla", true);
+TestInjectorBind(new InjectorBindFactory(function(){ return 5; }), 5, true);
 
 // =============================================
 
-$specs = new InjectorSpecs();
-$specs->bind("host", new InjectorSpecValue("localhost"));
-$specs->bind("port", new InjectorSpecValue(80));
+$specs = new InjectorConfiguration();
+$specs->bind("host", new InjectorBindValue("localhost"));
+$specs->bind("port", new InjectorBindValue(80));
 
 $injector = new Injector(array($specs));
 $bla = $injector->provide(__NAMESPACE__ . "\\" . "bla");
 
-
+assert($bla->name == 5);
 
 

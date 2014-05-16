@@ -1,7 +1,7 @@
 <?
 namespace injector;
 
-class InjectorSpecValue implements InjectorSpec{
+class InjectorBindValue implements InjectorBind{
 	private $_value;
 
 

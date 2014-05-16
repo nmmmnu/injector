@@ -1,7 +1,7 @@
 <?
 namespace injector;
 
-class InjectorSpecObject implements InjectorSpec{
+class InjectorBindObject implements InjectorBind{
 	private $_classname;
 	private $_singleton;
 

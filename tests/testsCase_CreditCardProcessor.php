@@ -82,10 +82,10 @@ require_once __DIR__ . "/../__autoload.php";
 
 $ns = ""; // __NAMESPACE__ . "\\";
 
-$specs = new injector\InjectorSpecs();
-$specs->bind("database",	new injector\InjectorSpecObject($ns . "MySQLDatabase"));
-$specs->bind("queue",		new injector\InjectorSpecObject($ns . "OfflineQueue", false));
-$specs->bind("processor",	new injector\InjectorSpecObject($ns . "VisaCreditCardProcessor"));
+$specs = new injector\InjectorConfiguration();
+$specs->bind("database",	new injector\InjectorBindObject($ns . "MySQLDatabase"));
+$specs->bind("queue",		new injector\InjectorBindObject($ns . "OfflineQueue", false));
+$specs->bind("processor",	new injector\InjectorBindObject($ns . "VisaCreditCardProcessor"));
 
 
 $injector = new injector\Injector(array($specs));

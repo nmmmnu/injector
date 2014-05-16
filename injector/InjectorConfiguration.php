@@ -1,10 +1,10 @@
 <?
 namespace injector;
 
-class InjectorSpecs{
+class InjectorConfiguration{
 	private $_store = array();
 
-	function bind($from, InjectorSpec $provider){
+	function bind($from, InjectorBind $provider){
 		$this->_store[$from] = $provider;
 	}
 

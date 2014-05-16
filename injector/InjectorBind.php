@@ -1,7 +1,7 @@
 <?
 namespace injector;
 
-interface InjectorSpec{
+interface InjectorBind{
 	function provide();
 	function isSingleton();
 	function isFinal();
