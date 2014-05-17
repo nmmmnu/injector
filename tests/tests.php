@@ -47,6 +47,7 @@ function TestInjectorBind(InjectorBind $spec, $expect, $singleton){
 
 TestInjectorBind(new InjectorBindValue(5), 5, false);
 TestInjectorBind(new InjectorBindObject("bla"), "bla", true);
+TestInjectorBind(new InjectorBindFileObject(__DIR__ . "/data_testclass.php"), "bla\\bla\\testclass", true);
 TestInjectorBind(new InjectorBindFactory(function(){ return 5; }), 5, true);
 
 // =============================================
