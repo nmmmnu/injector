@@ -8,7 +8,7 @@ namespace injector;
  * the object is later re-evaluated
  *
  */
-class InjectorBindObject implements InjectorBind{
+class BindObject implements Bind{
 	private $_classname;
 	private $_singleton;
 

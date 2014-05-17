@@ -84,7 +84,7 @@ class Injector{
 	}
 
 
-	private function getDependencyFromSingleton(InjectorBind $provider, $name){
+	private function getDependencyFromSingleton(Bind $provider, $name){
 		if (isset($this->_singletons[$name]))
 			return $this->_singletons[$name];
 
@@ -96,7 +96,7 @@ class Injector{
 	}
 
 
-	private function getDependencyFromProvider(InjectorBind $provider){
+	private function getDependencyFromProvider(Bind $provider){
 		$value = $provider->provide();
 
 		if ($provider->isFinal())

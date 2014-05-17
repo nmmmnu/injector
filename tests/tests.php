@@ -1,5 +1,5 @@
 <?
-namespace injector;
+namespace tests;
 
 require_once __DIR__ . "/../__autoload.php";
 
@@ -38,25 +38,25 @@ class bla{
 
 // =============================================
 
-function TestInjectorBind(InjectorBind $spec, $expect, $singleton){
+function TestInjectorBind(\injector\Bind $spec, $expect, $singleton){
 	printf("Testing %s...\n", get_class($spec));
 
 	assert($spec->provide()     == $expect);
 	assert($spec->isSingleton() == $singleton);
 }
 
-TestInjectorBind(new InjectorBindValue(5), 5, false);
-TestInjectorBind(new InjectorBindObject("bla"), "bla", true);
-TestInjectorBind(new InjectorBindFileObject(__DIR__ . "/data_testclass.php"), "bla\\bla\\testclass", true);
-TestInjectorBind(new InjectorBindFactory(function(){ return 5; }), 5, true);
+TestInjectorBind(new \injector\BindValue(5), 5, false);
+TestInjectorBind(new \injector\BindObject("bla"), "bla", true);
+TestInjectorBind(new \injector\BindFileObject(__DIR__ . "/data_testclass.php"), "bla\\bla\\testclass", true);
+TestInjectorBind(new \injector\BindFactory(function(){ return 5; }), 5, true);
 
 // =============================================
 
-$specs = new InjectorConfiguration();
-$specs->bind("host", new InjectorBindValue("localhost"));
-$specs->bind("port", new InjectorBindValue(80));
+$specs = new \injector\Configuration();
+$specs->bind("host", new \injector\BindValue("localhost"));
+$specs->bind("port", new \injector\BindValue(80));
 
-$injector = new Injector(array($specs));
+$injector = new \injector\Injector(array($specs));
 $bla = $injector->provide(__NAMESPACE__ . "\\" . "bla");
 
 assert($bla->name == 5);

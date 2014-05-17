@@ -8,7 +8,7 @@ namespace injector;
  * the object is later re-evaluated
  *
  */
-class InjectorBindFileObject implements InjectorBind{
+class BindFileObject implements Bind{
 	private static $_data = array();
 
 	private $_filename;

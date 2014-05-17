@@ -6,7 +6,7 @@ namespace injector;
  * InjectorBind to Factory, e.g. PHP callable.
  *
  */
- class InjectorBindFactory implements InjectorBind{
+ class BindFactory implements Bind{
 	private $_callable;
 	private $_singleton;
 

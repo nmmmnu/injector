@@ -122,41 +122,55 @@ require_once __DIR__ . "/../__autoload.php";
 $ns = __NAMESPACE__ . "\\";
 
 
+function getConfigurationDevelopment(){
+	$conf = new injector\Configuration();
 
-$specs_development = new injector\InjectorConfiguration();
-$specs_development->bind("database",	new injector\InjectorBindObject($ns . "MySQLDatabase"));
-$specs_development->bind("mysqlhost",	new injector\InjectorBindValue("localhost"));
-$specs_development->bind("mysqlport",	new injector\InjectorBindValue("3306"));
+	$conf->bind("database",	new injector\BindObject($ns . "MySQLDatabase"));
+	$conf->bind("mysqlhost",	new injector\BindValue("localhost"));
+	$conf->bind("mysqlport",	new injector\BindValue("3306"));
 
-$specs_development->bind("queue",	new injector\InjectorBindObject($ns . "OfflineQueue", false));
+	$conf->bind("queue",	new injector\BindObject($ns . "OfflineQueue", false));
 
-$specs_development->bind("processor",	new injector\InjectorBindObject($ns . "FakeCardProcessor"));
+	$conf->bind("processor",	new injector\BindObject($ns . "FakeCardProcessor"));
 
+	return $conf;
+}
 
+function getConfigurationProduction(){
+	$conf = new injector\Configuration();
 
-$specs_production = new injector\InjectorConfiguration();
-$specs_production->bind("database",	new injector\InjectorBindObject($ns . "OracleDatabase"));
-$specs_production->bind("oraclehost",	new injector\InjectorBindValue("oracle.server1"));
-$specs_production->bind("oracleport",	new injector\InjectorBindValue("5555"));
+	$conf->bind("database",	new injector\BindObject($ns . "OracleDatabase"));
+	$conf->bind("oraclehost",	new injector\BindValue("oracle.server1"));
+	$conf->bind("oracleport",	new injector\BindValue("5555"));
 
-$specs_production->bind("queue",	new injector\InjectorBindObject($ns . "OfflineQueue", false));
+	$conf->bind("queue",	new injector\BindObject($ns . "OfflineQueue", false));
 
-$specs_production->bind("processor",	new injector\InjectorBindObject($ns . "VisaCreditCardProcessor"));
-$specs_production->bind("cchost",	new injector\InjectorBindValue("www.citibank.com"));
-$specs_production->bind("ccport",	new injector\InjectorBindValue("8080"));
+	$conf->bind("processor",	new injector\BindObject($ns . "VisaCreditCardProcessor"));
+	$conf->bind("cchost",	new injector\BindValue("www.citibank.com"));
+	$conf->bind("ccport",	new injector\BindValue("8080"));
 
+	return $conf;
+}
 
+function demoApp($msg, injector\Configuration $conf){
+	echo "\n";
+	echo "\n";
+	echo "===========================================\n";
+	echo "Now displaying $msg configuration\n";
+	echo "===========================================\n";
+	echo "\n";
 
-$specs = $specs_development;
-$specs = $specs_production;
+	$injector = new injector\Injector(array($conf));
 
+	$customer = $injector->provide("Customer");
 
+	//var_dump($customer);
 
-$injector = new injector\Injector(array($specs));
-$customer = $injector->provide("Customer");
+	$customer->cust_whoami();
+}
 
-//var_dump($customer);
+demoApp("Development", getConfigurationDevelopment());
 
-$customer->cust_whoami();
+demoApp("Production", getConfigurationProduction());
 
 

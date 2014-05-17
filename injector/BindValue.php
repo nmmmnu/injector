@@ -8,7 +8,7 @@ namespace injector;
  * this is used mostly for configuration purposes
  *
  */
-class InjectorBindValue implements InjectorBind{
+class BindValue implements Bind{
 	private $_value;
 
 

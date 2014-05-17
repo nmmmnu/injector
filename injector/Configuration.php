@@ -7,7 +7,7 @@ namespace injector;
  * configuration placeholder for Injector class
  *
  */
-class InjectorConfiguration{
+class Configuration{
 	private $_store = array();
 
 	/**
@@ -17,7 +17,7 @@ class InjectorConfiguration{
 	 * @param InjectorBind $provider provider
 	 *
 	 */
-	function bind($from, InjectorBind $provider){
+	function bind($from, Bind $provider){
 		$this->_store[$from] = $provider;
 	}
 

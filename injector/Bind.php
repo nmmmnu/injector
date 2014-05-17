@@ -5,7 +5,7 @@ namespace injector;
  * InjectorBind interface
  *
  */
-interface InjectorBind{
+interface Bind{
 	/**
 	 * provide the resource
 	 *
