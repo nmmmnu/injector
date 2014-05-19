@@ -1,15 +1,22 @@
 <?
 
+function formater($level, $class, $id){
+	$sp = str_repeat("> ", $level);
+	printf("%-8s %-30s %04d\n", $sp, $class, $id);
+}
+
+// =============================================
+
 interface Database{
-	function db_whoami();
+	function db_whoami($level);
 }
 
 interface Queue{
-	function q_whoami();
+	function q_whoami($level);
 }
 
 interface CreditCardProcessor{
-	function cc_whoami();
+	function cc_whoami($level);
 }
 
 // =============================================
@@ -23,9 +30,9 @@ class MySQLDatabase implements Database{
 		$this->_url   = "mysql://$mysqlhost:$mysqlport/";
 	}
 
-	function db_whoami(){
-		printf("%-30s %04d\n", __CLASS__, $this->_rand);
-		printf("\tDatabase URL: %s\n", $this->_url);
+	function db_whoami($level){
+		formater($level, __CLASS__, $this->_rand);
+		printf("\t\tDatabase URL: %s\n", $this->_url);
 	}
 }
 
@@ -38,9 +45,9 @@ class OracleDatabase implements Database{
 		$this->_url   = "oracle://$oraclehost:$oracleport/";
 	}
 
-	function db_whoami(){
-		printf("%-30s %04d\n", __CLASS__, $this->_rand);
-		printf("\tDatabase URL: %s\n", $this->_url);
+	function db_whoami($level){
+		formater($level, __CLASS__, $this->_rand);
+		printf("\t\tDatabase URL: %s\n", $this->_url);
 	}
 }
 
@@ -53,9 +60,9 @@ class OfflineQueue implements Queue{
 		$this->_rand = rand(0, 9999);
 	}
 
-	function q_whoami(){
-		printf("%-30s %04d\n", __CLASS__, $this->_rand);
-		$this->_database->db_whoami();
+	function q_whoami($level){
+		formater($level, __CLASS__, $this->_rand);
+		$this->_database->db_whoami($level + 1);
 	}
 }
 
@@ -70,10 +77,10 @@ class FakeCardProcessor implements CreditCardProcessor{
 		$this->_rand  = rand(0, 9999);
 	}
 
-	function cc_whoami(){
-		printf("%-30s %04d\n", __CLASS__, $this->_rand);
-		printf("\tProcessor URL: %s\n", $this->_url);
-		$this->_queue->q_whoami();
+	function cc_whoami($level){
+		formater($level, __CLASS__, $this->_rand);
+		printf("\t\tProcessor URL: %s\n", $this->_url);
+		$this->_queue->q_whoami($level + 1);
 	}
 }
 
@@ -88,10 +95,10 @@ class VisaCreditCardProcessor implements CreditCardProcessor{
 		$this->_rand  = rand(0, 9999);
 	}
 
-	function cc_whoami(){
-		printf("%-30s %04d\n", __CLASS__, $this->_rand);
-		printf("\tProcessor URL: %s\n", $this->_url);
-		$this->_queue->q_whoami();
+	function cc_whoami($level){
+		formater($level, __CLASS__, $this->_rand);
+		printf("\t\tProcessor URL: %s\n", $this->_url);
+		$this->_queue->q_whoami($level + 1);
 	}
 }
 
@@ -108,8 +115,8 @@ class Customer{
 
 	function cust_whoami(){
 		echo __CLASS__ . "\n";
-		echo $this->_processor->cc_whoami();
-		echo $this->_queue->q_whoami();
+		echo $this->_processor->cc_whoami(1);
+		echo $this->_queue->q_whoami(1);
 	}
 }
 
@@ -119,17 +126,18 @@ require_once __DIR__ . "/../__autoload.php";
 
 // =============================================
 
-$ns = __NAMESPACE__ . "\\";
 
 
 function getConfigurationDevelopment(){
+	$ns = __NAMESPACE__ . "\\";
+
 	$conf = new injector\Configuration();
 
-	$conf->bind("database",	new injector\BindObject($ns . "MySQLDatabase"));
+	$conf->bind("database",		new injector\BindObject($ns . "MySQLDatabase"));
 	$conf->bind("mysqlhost",	new injector\BindValue("localhost"));
 	$conf->bind("mysqlport",	new injector\BindValue("3306"));
 
-	$conf->bind("queue",	new injector\BindObject($ns . "OfflineQueue", false));
+	$conf->bind("queue",		new injector\BindObject($ns . "OfflineQueue", false));
 
 	$conf->bind("processor",	new injector\BindObject($ns . "FakeCardProcessor"));
 
@@ -137,30 +145,30 @@ function getConfigurationDevelopment(){
 }
 
 function getConfigurationProduction(){
+	$ns = __NAMESPACE__ . "\\";
+
 	$conf = new injector\Configuration();
 
-	$conf->bind("database",	new injector\BindObject($ns . "OracleDatabase"));
+	$conf->bind("database",		new injector\BindObject($ns . "OracleDatabase"));
 	$conf->bind("oraclehost",	new injector\BindValue("oracle.server1"));
 	$conf->bind("oracleport",	new injector\BindValue("5555"));
 
-	$conf->bind("queue",	new injector\BindObject($ns . "OfflineQueue", false));
+	$conf->bind("queue",		new injector\BindObject($ns . "OfflineQueue", false));
 
 	$conf->bind("processor",	new injector\BindObject($ns . "VisaCreditCardProcessor"));
-	$conf->bind("cchost",	new injector\BindValue("www.citibank.com"));
-	$conf->bind("ccport",	new injector\BindValue("8080"));
+	$conf->bind("cchost",		new injector\BindValue("www.citibank.com"));
+	$conf->bind("ccport",		new injector\BindValue("8080"));
 
 	return $conf;
 }
 
-function demoApp($msg, injector\Configuration $conf){
+function demoApp($msg, injector\Injector $injector){
 	echo "\n";
 	echo "\n";
 	echo "===========================================\n";
 	echo "Now displaying $msg configuration\n";
 	echo "===========================================\n";
 	echo "\n";
-
-	$injector = new injector\Injector(array($conf));
 
 	$customer = $injector->provide("Customer");
 
@@ -169,8 +177,15 @@ function demoApp($msg, injector\Configuration $conf){
 	$customer->cust_whoami();
 }
 
-demoApp("Development", getConfigurationDevelopment());
+$conf = getConfigurationDevelopment();
+$injector = new injector\Injector(array($conf));
 
-demoApp("Production", getConfigurationProduction());
+demoApp("Development", $injector);
+demoApp("Development again", $injector);
+
+$conf = getConfigurationProduction();
+$injector = new injector\Injector(array($conf));
+
+demoApp("Production", $injector);
 
 
