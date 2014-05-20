@@ -20,7 +20,15 @@ Dependency injection is a software design pattern that implements inversion of c
 Suppose we have following setup:
 
 ```
-class MySQLDatabase{
+interface Database{
+}
+
+class MySQLDatabase implements Database{
+	function __construct($host, $user, $pass){
+	}
+}
+
+class MockDatabase implements Database{
 	function __construct($host, $user, $pass){
 	}
 }
@@ -47,7 +55,16 @@ $ccp = new CreditCardProcessor($db);
 $ccp->usage();
 ```
 
-There are several problems with this approach.
+The benefits of Dependency Injection are:
+
+- the class do not need to instanciate the objects using "new".
+- the class behavour is controlled "outside" the class.
+- the class works with interface or with abstract class.
+
+There are some problems with this approach:
+
+- lots of external code for instanciate the objects.
+- instantiation code is mixed with business logic, e.g. difficult control over the code
 
 ## Basic usage with Dependency Injection + Factories
 
@@ -79,7 +96,7 @@ $ccp = $factory->getInstance();
 $ccp->usage();
 ```
 
-... or in case of production:
+... or in case of testing:
 
 ```
 $factory = new TestCreditCardProcessorFactory();
@@ -87,7 +104,14 @@ $ccp = $factory->getInstance();
 $ccp->usage();
 ```
 
-In all cases writting Factories is not fun.
+The additional benefits of Dependency Injection + Factories are:
+
+- instantiation code is not mixed with business logic
+
+There are some problems with this approach:
+
+- much more code and much more clases
+- in all cases writting Factories is not fun :)
 
 ## Basic usage with PHP-Inject
 
@@ -106,14 +130,22 @@ $conf->bind("pass",	new injector\BindValue("pass"));
 // test configuration
 $conftest = new injector\Configuration();
 $conftest->bind("db",	new injector\BindObject("MockDatabase"));
+```
 
-// get CreditCardProcessor for production:
+then in case of production:
+
+```
 $injector = new injector\Injector(array($conf));
-ccp = $injector->provide("CreditCardProcessor");
+$ccp = $injector->provide("CreditCardProcessor");
+$ccp->usage();
+```
 
-// get CreditCardProcessor for testing:
+... or in case of testing:
+
+```
 $injector = new injector\Injector(array($conftest));
-ccp = $injector->provide("CreditCardProcessor");
+$ccp = $injector->provide("CreditCardProcessor");
+$ccp->usage();
 ```
 
 ## Different types of Binds:
