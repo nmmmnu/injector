@@ -137,6 +137,7 @@ class MySQLDatabase{
 }
 
 // bind MySQLDatabase to $db
+// if MySQLDatabase class have dependencies, they will be resolved.
 $conf->bind("db",	new injector\BindObject("MySQLDatabase"));
 ```
 
@@ -174,11 +175,10 @@ class MyFoo{
 }
 ```
 
-...then:
-
+in main code:
 ```
 // bind the class defined in file "Foo.php" (e.g. MyFoo) to $foo
-// if MyFoo class have dependencies, they will be resolved
+// if MyFoo class have dependencies, they will be resolved.
 $conf->bind("foo",	new injector\BindFileObject(__DIR__ . "/Foo.php"));
 ```
 
