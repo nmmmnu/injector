@@ -19,7 +19,8 @@ Dependency injection is a software design pattern that implements inversion of c
 
 Suppose we have following setup:
 
-```class MySQLDatabase{
+```
+class MySQLDatabase{
 	function __construct($host, $user, $pass){
 	}
 }
@@ -32,14 +33,16 @@ class CreditCardProcessor{
 
 in such cases you probably need to do:
 
-```$db  = new MySQLDatabase("localhost", "admin", "secret");
+```
+$db  = new MySQLDatabase("localhost", "admin", "secret");
 $ccp = new CreditCardProcessor($db);
 $ccp->usage();
 ```
 
 ...later if you want do to some tests, you will need to do:
 
-```$db  = new MockDatabase();
+```
+$db  = new MockDatabase();
 $ccp = new CreditCardProcessor($db);
 $ccp->usage();
 ```
@@ -47,7 +50,8 @@ $ccp->usage();
 There are several problems with this approach.
 You probably will need to create Factory classes for managing the dependencies:
 
-```interface CreditCardProcessorFactory{
+```
+interface CreditCardProcessorFactory{
 	function getInstance();
 }
 
@@ -68,13 +72,15 @@ class TestCreditCardProcessorFactory{
 
 then in case of production:
 
-```$factory = new MySQLCreditCardProcessorFactory();
+```
+$factory = new MySQLCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
 ```
 
 ... or in case of production:
 
-```$factory = new TestCreditCardProcessorFactory();
+```
+$factory = new TestCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
 ```
 
