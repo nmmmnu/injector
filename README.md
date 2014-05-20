@@ -15,7 +15,7 @@ Dependency injection is a software design pattern that implements inversion of c
 - High quality extendable code
 
 
-## Basic usage of Dependency Injection
+## Dependency Injection - basic usage
 
 Suppose we have following setup:
 
@@ -33,8 +33,12 @@ class MockDatabase implements Database{
 	}
 }
 
+// CreditCardProcessor depends of Database interface
 class CreditCardProcessor{
 	function __construct(Database $db){
+	}
+
+	function process(){
 	}
 }
 ```
@@ -44,7 +48,7 @@ in such cases you probably need to do:
 ```
 $db  = new MySQLDatabase("localhost", "admin", "secret");
 $ccp = new CreditCardProcessor($db);
-$ccp->usage();
+$ccp->process();
 ```
 
 ...later if you want do to some tests, you will need to do:
@@ -52,7 +56,7 @@ $ccp->usage();
 ```
 $db  = new MockDatabase();
 $ccp = new CreditCardProcessor($db);
-$ccp->usage();
+$ccp->process();
 ```
 
 The benefits of Dependency Injection are:
@@ -66,21 +70,21 @@ There are some problems with this approach:
 - lots of external code for instanciate the objects.
 - instantiation code is mixed with business logic, e.g. difficult control over the code
 
-## Basic usage with Dependency Injection + Factories
+## Dependency Injection with Factories
 
 ```
 interface CreditCardProcessorFactory{
 	function getInstance();
 }
 
-class MySQLCreditCardProcessorFactory implements CreditCardProcessorFactory{
+class ProductionCreditCardProcessorFactory implements CreditCardProcessorFactory{
 	function getInstance(){
 		$db  = new MySQLDatabase("localhost", "admin", "secret");
 		return new CreditCardProcessor($db);
 	}
 }
 
-class TestCreditCardProcessorFactory{
+class TestCreditCardProcessorFactory implements CreditCardProcessorFactory{
 	function getInstance(){
 		$db  = new MockDatabase();
 		return new CreditCardProcessor($db);
@@ -91,9 +95,9 @@ class TestCreditCardProcessorFactory{
 then in case of production:
 
 ```
-$factory = new MySQLCreditCardProcessorFactory();
+$factory = new ProductionCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
-$ccp->usage();
+$ccp->process();
 ```
 
 ... or in case of testing:
@@ -101,7 +105,7 @@ $ccp->usage();
 ```
 $factory = new TestCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
-$ccp->usage();
+$ccp->process();
 ```
 
 The additional benefits of Dependency Injection + Factories are:
@@ -113,7 +117,7 @@ There are some problems with this approach:
 - much more code and much more clases
 - in all cases writting Factories is not fun :)
 
-## Basic usage with PHP-Inject
+## Dependency Injection with PHP-Inject
 
 This is why many languages offers Dependency Injections Containers.
 
@@ -137,7 +141,7 @@ then in case of production:
 ```
 $injector = new injector\Injector(array($conf));
 $ccp = $injector->provide("CreditCardProcessor");
-$ccp->usage();
+$ccp->process();
 ```
 
 ... or in case of testing:
@@ -145,8 +149,24 @@ $ccp->usage();
 ```
 $injector = new injector\Injector(array($conftest));
 $ccp = $injector->provide("CreditCardProcessor");
-$ccp->usage();
+$ccp->process();
 ```
+
+The additional benefits of Dependency Injection with PHP-Inject are:
+
+- instantiation code is not mixed with business logic
+- injecting configuration parameters as well as Objects
+- instanciate whole dependency tree, e.g. "everything"
+- can instanciate "Singleton"-like Objects -
+e.g. for example create only one connection to the database and provide it to all places where is necessary.
+- less code, more controll
+
+There are some problems with this approach:
+
+- because PHP not really have argument types, you need to use descriptive and different arguments.
+For example if you connect to Redis and MySQL, you do not want to use $host for both arguments.
+You will need to use different argument name, such $redis_host and $mysql_host, in order PHP_Inject to inject desirable values.
+
 
 ## Different types of Binds:
 
