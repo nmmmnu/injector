@@ -123,4 +123,63 @@ ccp = $injector->provide("CreditCardProcessor");
 - BindFactory - use a factory (PHP Callable) in order to get the value or instantiate the object. If $final is set to false, then return type is instantiated in a way similar to BindObject.
 - BindFileObject - similar to BindObject, but is rather special case. Inject an Object that is defined in some file. File must contains only one Class definition.
 
+## BindValue example
+
+```
+// bind "localhost" to $host
+$conf->bind("host",	new injector\BindValue("localhost"));
+```
+
+## BindObject example
+
+```
+class MySQLDatabase{
+}
+
+// bind MySQLDatabase to $db
+$conf->bind("db",	new injector\BindObject("MySQLDatabase"));
+```
+
+## BindFactory example
+
+```
+class MySQLDatabase{
+}
+
+// bind factory to $db
+$conf->bind("db",	new injector\BindFactory(function(){
+	return new MySQLDatabase();
+});
+```
+
+... or using static method ...
+
+```
+class MySQLDatabase{
+	static function getInstance(){
+		return new MySQLDatabase();
+	}
+}
+
+// bind factory to $db
+$conf->bind("db",	new injector\BindFactory("MySQLDatabase::getInstance");
+```
+
+## BindFileObject example
+
+in file "Foo.php"
+```
+// classname do not need to be same as filename
+class MyFoo{
+}
+```
+
+...then:
+
+```
+// bind the class defined in file "Foo.php" (e.g. MyFoo) to $foo
+// if MyFoo class have dependencies, they will be resolved
+$conf->bind("foo",	new injector\BindFileObject(__DIR__ . "/Foo.php"));
+```
+
 ## [eof]
