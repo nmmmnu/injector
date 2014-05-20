@@ -159,7 +159,7 @@ The additional benefits of Dependency Injection with PHP-Inject are:
 - instanciate whole dependency tree, e.g. "everything"
 - can instanciate "Singleton"-like Objects -
 e.g. for example create only one connection to the database and provide it to all places where is necessary.
-- less code, more controll
+- less code, more control
 
 There are some problems with this approach:
 
@@ -170,10 +170,10 @@ You will need to use different argument name, such $redis_host and $mysql_host, 
 
 ## Different types of Binds:
 
-- BindValue - inject a value. The value can be any PHP type, but Objects are not good choice.
-- BindObject - inject an Object. Object is instantiated using new and its dependencies are resolved.
-- BindFactory - use a factory (PHP Callable) in order to get the value or instantiate the object. If $final is set to false, then return type is instantiated in a way similar to BindObject.
-- BindFileObject - similar to BindObject, but is rather special case. Inject an Object that is defined in some file. File must contains only one Class definition.
+- **BindValue** - inject a value. The value can be any PHP type, but Objects are not good choice.
+- **BindObject** - inject an Object. Object is instantiated using new and its dependencies are resolved.
+- **BindFactory** - use a factory (PHP Callable) in order to get the value or instantiate the object. If $final is set to false, then return type is instantiated in a way similar to BindObject.
+- **BindFileObject** - similar to BindObject, but is rather special case. Inject an Object that is defined in some file. File must contains only one Class definition.
 
 ## BindValue example
 
@@ -208,14 +208,28 @@ $conf->bind("db",	new injector\BindFactory(function(){
 ... or using static method ...
 
 ```
-class MySQLDatabase{
+class MySQLDatabaseFactory{
 	static function getInstance(){
 		return new MySQLDatabase();
 	}
 }
 
 // bind factory to $db
-$conf->bind("db",	new injector\BindFactory("MySQLDatabase::getInstance");
+$conf->bind("db",	new injector\BindFactory("MySQLDatabaseFactory::getInstance");
+```
+
+... or using normal method ...
+
+```
+class MySQLDatabaseFactory{
+	function getInstance(){
+		return new MySQLDatabase();
+	}
+}
+
+// bind factory to $db
+$factory = new MySQLDatabaseFactory();
+$conf->bind("db",	new injector\BindFactory(array($factory, "getInstance"));
 ```
 
 ## BindFileObject example
