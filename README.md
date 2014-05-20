@@ -15,7 +15,7 @@ Dependency injection is a software design pattern that implements inversion of c
 - High quality extendable code
 
 
-## Basic usage
+## Basic usage of Dependency Injection
 
 Suppose we have following setup:
 
@@ -48,7 +48,8 @@ $ccp->usage();
 ```
 
 There are several problems with this approach.
-You probably will need to create Factory classes for managing the dependencies:
+
+## Basic usage with Dependency Injection + Factories
 
 ```
 interface CreditCardProcessorFactory{
@@ -88,6 +89,8 @@ $ccp->usage();
 
 In all cases writting Factories is not fun.
 
+## Basic usage with PHP-Inject
+
 This is why many languages offers Dependency Injections Containers.
 
 Here is how this same example can be done using PHP-Inject:
@@ -113,5 +116,11 @@ $injector = new injector\Injector(array($conftest));
 ccp = $injector->provide("CreditCardProcessor");
 ```
 
+## Different types of Binds:
+
+- BindValue - inject a value. The value can be any PHP type, but Objects are not good choice.
+- BindObject - inject an Object. Object is instantiated using new and its dependencies are resolved.
+- BindFactory - use a factory (PHP Callable) in order to get the value or instantiate the object. If $final is set to false, then return type is instantiated in a way similar to BindObject.
+- BindFileObject - similar to BindObject, but is rather special case. Inject an Object that is defined in some file. File must contains only one Class definition.
 
 ## [eof]
