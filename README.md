@@ -64,7 +64,7 @@ class MySQLCreditCardProcessorFactory implements CreditCardProcessorFactory{
 
 class TestCreditCardProcessorFactory{
 	function getInstance(){
-		$db  = new MySQLDatabase("localhost", "admin", "secret");
+		$db  = new MockDatabase();
 		return new CreditCardProcessor($db);
 	}
 }
@@ -75,6 +75,7 @@ then in case of production:
 ```
 $factory = new MySQLCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
+$ccp->usage();
 ```
 
 ... or in case of production:
@@ -82,6 +83,34 @@ $ccp = $factory->getInstance();
 ```
 $factory = new TestCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
+$ccp->usage();
+```
+
+In all cases writting Factories is not fun.
+
+This is why many languages offers Dependency Injections Containers.
+
+Here is how this same example can be done using PHP-Inject:
+
+```
+// production configuration
+$conf = new injector\Configuration();
+$conf->bind("db",	new injector\BindObject("MySQLDatabase"));
+$conf->bind("host",	new injector\BindValue("localhost"));
+$conf->bind("user",	new injector\BindValue("admin"));
+$conf->bind("pass",	new injector\BindValue("pass"));
+
+// test configuration
+$conftest = new injector\Configuration();
+$conftest->bind("db",	new injector\BindObject("MockDatabase"));
+
+// get CreditCardProcessor for production:
+$injector = new injector\Injector(array($conf));
+ccp = $injector->provide("CreditCardProcessor");
+
+// get CreditCardProcessor for testing:
+$injector = new injector\Injector(array($conftest));
+ccp = $injector->provide("CreditCardProcessor");
 ```
 
 
