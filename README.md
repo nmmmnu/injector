@@ -6,7 +6,9 @@ From Wikipedia:
 
 Dependency injection is a software design pattern that implements inversion of control and allows a program design to follow the dependency inversion principle.
 
-(http://en.wikipedia.org/wiki/Dependency_injection)
+http://en.wikipedia.org/wiki/Dependency_injection
+
+
 
 ## Goals
 
@@ -15,9 +17,38 @@ Dependency injection is a software design pattern that implements inversion of c
 - High quality extendable code
 
 
-## Dependency Injection - basic usage
+
+## Workflow without Dependency Injection
 
 Suppose we have following setup:
+
+We have CreditCardProcessor class, in order to work, it needs kind of Database:
+
+~~~php
+class CreditCardProcessor{
+	function __construct(){
+		$this->db = new MySQLDatabase("localhost", "admin", "secret");
+	}
+
+	function process(){
+	}
+}
+~~~
+
+There are some problems with this approach:
+
+- MySQLDatabase is **hard-wired** in the constructor. If we want to change it, for example connect to different database or for testing, we will need to edit the contructor.
+- Code for instantiation e.g. new MySQLDatabase is mixed with business logic.
+
+Not using Dependency Injection probably have single benefit:
+
+- Code is clean and easy to understand, just by reading a single file.
+
+
+
+## Dependency Injection - basic usage
+
+Instead of **hard-wire** the MySQLDatabase class, we can pass interface as argument for the constructor.
 
 ~~~php
 interface Database{
@@ -70,7 +101,11 @@ There are some problems with this approach:
 - lots of external code for instanciate the objects.
 - instantiation code is mixed with business logic, e.g. difficult control over the code
 
+
+
 ## Dependency Injection with Factories
+
+We can clean things a bit, if we use a Factory:
 
 ~~~php
 interface CreditCardProcessorFactory{
@@ -116,6 +151,8 @@ There are some problems with this approach:
 
 - much more code and much more clases
 - in all cases writting Factories is not fun :)
+
+
 
 ## Dependency Injection with PHP-Inject
 
@@ -166,6 +203,7 @@ There are some problems with this approach:
 - because PHP not really have argument types, you need to use descriptive and different arguments.
 For example if you connect to Redis and MySQL, you do not want to use $host for both arguments.
 You will need to use different argument name, such $redis_host and $mysql_host, in order PHP_Inject to inject desirable values.
+
 
 
 ## Different types of Binds:
