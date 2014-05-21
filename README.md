@@ -19,7 +19,7 @@ Dependency injection is a software design pattern that implements inversion of c
 
 Suppose we have following setup:
 
-```
+~~~php
 interface Database{
 }
 
@@ -41,23 +41,23 @@ class CreditCardProcessor{
 	function process(){
 	}
 }
-```
+~~~
 
 in such cases you probably need to do:
 
-```
+~~~php
 $db  = new MySQLDatabase("localhost", "admin", "secret");
 $ccp = new CreditCardProcessor($db);
 $ccp->process();
-```
+~~~
 
 ...later if you want do to some tests, you will need to do:
 
-```
+~~~php
 $db  = new MockDatabase();
 $ccp = new CreditCardProcessor($db);
 $ccp->process();
-```
+~~~
 
 The benefits of Dependency Injection are:
 
@@ -72,7 +72,7 @@ There are some problems with this approach:
 
 ## Dependency Injection with Factories
 
-```
+~~~php
 interface CreditCardProcessorFactory{
 	function getInstance();
 }
@@ -90,23 +90,23 @@ class TestCreditCardProcessorFactory implements CreditCardProcessorFactory{
 		return new CreditCardProcessor($db);
 	}
 }
-```
+~~~
 
 then in case of production:
 
-```
+~~~php
 $factory = new ProductionCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
 $ccp->process();
-```
+~~~
 
 ... or in case of testing:
 
-```
+~~~php
 $factory = new TestCreditCardProcessorFactory();
 $ccp = $factory->getInstance();
 $ccp->process();
-```
+~~~
 
 The additional benefits of Dependency Injection + Factories are:
 
@@ -123,7 +123,7 @@ This is why many languages offers Dependency Injections Containers.
 
 Here is how this same example can be done using PHP-Inject:
 
-```
+~~~php
 // production configuration
 $conf = new injector\Configuration();
 $conf->bind("db",	new injector\BindObject("MySQLDatabase"));
@@ -134,23 +134,23 @@ $conf->bind("pass",	new injector\BindValue("pass"));
 // test configuration
 $conftest = new injector\Configuration();
 $conftest->bind("db",	new injector\BindObject("MockDatabase"));
-```
+~~~
 
 then in case of production:
 
-```
+~~~php
 $injector = new injector\Injector(array($conf));
 $ccp = $injector->provide("CreditCardProcessor");
 $ccp->process();
-```
+~~~
 
 ... or in case of testing:
 
-```
+~~~php
 $injector = new injector\Injector(array($conftest));
 $ccp = $injector->provide("CreditCardProcessor");
 $ccp->process();
-```
+~~~
 
 The additional benefits of Dependency Injection with PHP-Inject are:
 
@@ -177,25 +177,25 @@ You will need to use different argument name, such $redis_host and $mysql_host, 
 
 ## BindValue example
 
-```
+~~~php
 // bind "localhost" to $host
 $conf->bind("host",	new injector\BindValue("localhost"));
-```
+~~~
 
 ## BindObject example
 
-```
+~~~php
 class MySQLDatabase{
 }
 
 // bind MySQLDatabase to $db
 // if MySQLDatabase class have dependencies, they will be resolved.
 $conf->bind("db",	new injector\BindObject("MySQLDatabase"));
-```
+~~~
 
 ## BindFactory example
 
-```
+~~~php
 class MySQLDatabase{
 }
 
@@ -203,11 +203,11 @@ class MySQLDatabase{
 $conf->bind("db",	new injector\BindFactory(function(){
 	return new MySQLDatabase();
 });
-```
+~~~
 
 ... or using static method ...
 
-```
+~~~php
 class MySQLDatabaseFactory{
 	static function getInstance(){
 		return new MySQLDatabase();
@@ -216,11 +216,11 @@ class MySQLDatabaseFactory{
 
 // bind factory to $db
 $conf->bind("db",	new injector\BindFactory("MySQLDatabaseFactory::getInstance");
-```
+~~~
 
 ... or using normal method ...
 
-```
+~~~php
 class MySQLDatabaseFactory{
 	function getInstance(){
 		return new MySQLDatabase();
@@ -230,22 +230,22 @@ class MySQLDatabaseFactory{
 // bind factory to $db
 $factory = new MySQLDatabaseFactory();
 $conf->bind("db",	new injector\BindFactory(array($factory, "getInstance"));
-```
+~~~
 
 ## BindFileObject example
 
 in file "Foo.php"
-```
+~~~php
 // classname do not need to be same as filename
 class MyFoo{
 }
-```
+~~~
 
 in main code:
-```
+~~~php
 // bind the class defined in file "Foo.php" (e.g. MyFoo) to $foo
 // if MyFoo class have dependencies, they will be resolved.
 $conf->bind("foo",	new injector\BindFileObject(__DIR__ . "/Foo.php"));
-```
+~~~
 
 ## [eof]
