@@ -48,7 +48,7 @@ Not using Dependency Injection probably have single benefit:
 
 ## Dependency Injection - basic usage
 
-Instead of **hard-wire** the MySQLDatabase class, we can pass interface as argument for the constructor.
+Instead of **hard-wire** the MySQLDatabase class, we can pass interface Database as argument for the constructor.
 
 ~~~php
 interface Database{
@@ -67,6 +67,7 @@ class MockDatabase implements Database{
 // CreditCardProcessor depends of Database interface
 class CreditCardProcessor{
 	function __construct(Database $db){
+		$this->db = $db;
 	}
 
 	function process(){
@@ -94,7 +95,8 @@ The benefits of Dependency Injection are:
 
 - the class do not need to instanciate the objects using "new".
 - the class behavour is controlled "outside" the class.
-- the class works with interface or with abstract class.
+- great flexability, because the class can work with different implementations, without any changes.
+- great abstraction, because the class does not really "knows" with what object it works.
 
 There are some problems with this approach:
 
