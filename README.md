@@ -60,7 +60,7 @@ class MySQLDatabase implements Database{
 }
 
 class MockDatabase implements Database{
-	function __construct($host, $user, $pass){
+	function __construct(){
 	}
 }
 
@@ -215,14 +215,18 @@ You will need to use different argument name, such $redis_host and $mysql_host, 
 - **BindFactory** - use a factory (PHP Callable) in order to get the value or instantiate the object. If $final is set to false, then return type is instantiated in a way similar to BindObject.
 - **BindFileObject** - similar to BindObject, but is rather special case. Inject an Object that is defined in some file. File must contains only one Class definition.
 
-## BindValue example
+
+
+### BindValue
 
 ~~~php
 // bind "localhost" to $host
 $conf->bind("host",	new injector\BindValue("localhost"));
 ~~~
 
-## BindObject example
+
+
+### BindObject
 
 ~~~php
 class MySQLDatabase{
@@ -233,7 +237,9 @@ class MySQLDatabase{
 $conf->bind("db",	new injector\BindObject("MySQLDatabase"));
 ~~~
 
-## BindFactory example
+
+
+### BindFactory
 
 ~~~php
 class MySQLDatabase{
@@ -272,7 +278,9 @@ $factory = new MySQLDatabaseFactory();
 $conf->bind("db",	new injector\BindFactory(array($factory, "getInstance"));
 ~~~
 
-## BindFileObject example
+
+
+### BindFileObject
 
 in file "Foo.php"
 ~~~php
@@ -288,4 +296,4 @@ in main code:
 $conf->bind("foo",	new injector\BindFileObject(__DIR__ . "/Foo.php"));
 ~~~
 
-## [eof]
+# [eof]

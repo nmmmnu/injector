@@ -81,6 +81,8 @@ class Injector{
 
 			return $this->getDependencyFromProvider($provider);
 		}
+
+		return null;
 	}
 
 
