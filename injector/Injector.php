@@ -18,6 +18,7 @@ class Injector{
 
 	private $_specifications;
 	private $_singletons = array();
+	private $_providedSingletons = array();
 
 
 	/**
@@ -32,12 +33,25 @@ class Injector{
 		$this->_specifications = $specifications;
 	}
 
+
+	/**
+	 * get Reference to the $specifications array
+	 * 
+	 * @return array reference
+	 * 
+	 */
+	function & specifications(){
+		return $this->_specifications;
+	}
+	
+
 	/**
 	 * Lazi constructor call,
 	 *
 	 * e.g. instanciate new object
 	 *
 	 * @param string $classname name of the class
+	 * @return object
 	 *
 	 */
 	function provide($classname){
@@ -57,6 +71,7 @@ class Injector{
 	 *
 	 * @param object $instance instance of a class
 	 * @param string $method method to be called
+	 * @return mixed
 	 *
 	 */
 	function callMethod($instance, $method){
@@ -67,10 +82,33 @@ class Injector{
 
 		return call_user_func_array( array($instance, $method), $args);
 	}
+	
+	
+	/**
+	 * Create Singleton-like instance, then Lazi method call
+	 *
+	 * @param string $classname name of the class
+	 * @param string $method method to be called
+	 * @return mixed
+	 *
+	 */
+	function provideAndCallMethod($classname, $method){
+		if (! isset($this->_providedSingletons[$classname]))
+			$this->_providedSingletons[$classname] = $this->provide($classname);
+
+		$instance = $this->_providedSingletons[$classname];
+		
+		return $this->callMethod($instance, $method);
+	}
 
 
 	private function getDependency($name){
 		foreach($this->_specifications as $injectorSpecs){
+			// Because of the references,
+			// the array could contain fake data
+			if (! $injectorSpecs instanceof Configuration)
+				continue;
+				
 			$provider = $injectorSpecs->get($name);
 
 			if ($provider === null)
