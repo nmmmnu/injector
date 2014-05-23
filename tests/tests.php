@@ -111,3 +111,11 @@ assert($sInjector->callMethod($classname, $method) == 123);
 assert($sInjector->callMethod($classname, $method) == 123);
 
 
+// =============================================
+
+
+echo "All tests passed!!!\n";
+echo "You are awesome :)\n";
+
+exit(0);
+

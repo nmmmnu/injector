@@ -118,7 +118,12 @@ class Injector implements AbstractInjector{
 
 
 	private static function getDependencyRequirements($classname, $classmethod = self::constructor){
-		$reflection = new ReflectionMethod($classname, $classmethod);
+		$reflection  = new ReflectionClass($classname);
+
+		if (! $reflection->hasMethod($classmethod))
+			return array();
+
+		$reflection = $reflection->getMethod($classmethod);
 
 		$params = array();
 		foreach($reflection->getParameters() as $param)
