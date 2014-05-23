@@ -69,9 +69,6 @@ $conf->bind("host", new \injector\BindValue("localhost"));
 $conf->bind("port", new \injector\BindValue(80));
 
 
-// =============================================
-
-
 $injector = new \injector\Injector( /* array($conf) */ );
 
 $injector->specifications()["fake1"] = "bla?!?";	// put fake data first
@@ -79,22 +76,37 @@ $injector->specifications()["fake2"] = null;		// put null
 $injector->specifications()["conf"] = $conf;		// put real thing
 
 
-$sInjector = new \injector\Singleton($injector);
+$sInjector = new \injector\SingletonInjector($injector);
 
 
 // =============================================
 
 
-$bla = $injector->provide($classname);
+echo "\nTesting Injector::provide\n";
 
+$bla1 = $injector->provide($classname);
+$bla2 = $injector->provide($classname);
+
+assert($bla1 !== $bla2);
+
+$bla = $bla1;
 assert($bla->name == 5);
 
+echo "\nTesting Injector::call with object\n";
 assert($injector->callMethod($bla, $method) == 123);
+
+echo "\nTesting Injector::call with string\n";
+assert($injector->callMethod($classname, $method) == 123);
+assert($injector->callMethod($classname, $method) == 123);
 
 
 // =============================================
 
 
+echo "\nTesting SingletonInjector::call with string\n";
+$bla1 = $sInjector->provide($classname);
+$bla2 = $sInjector->provide($classname);
+assert($bla1 === $bla2);
 assert($sInjector->callMethod($classname, $method) == 123);
 assert($sInjector->callMethod($classname, $method) == 123);
 

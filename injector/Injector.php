@@ -12,7 +12,7 @@ use \ReflectionMethod;
  * - constructor, e.g. instanciate new class
  * - method, e.g. call the method of some object
  */
-class Injector{
+class Injector implements AbstractInjector{
 	const constructor = "__construct";
 
 
@@ -33,26 +33,11 @@ class Injector{
 	}
 
 
-	/**
-	 * get Reference to the $specifications array
-	 *
-	 * @return array reference
-	 *
-	 */
 	function & specifications(){
 		return $this->_specifications;
 	}
 
 
-	/**
-	 * Lazi constructor call,
-	 *
-	 * e.g. instanciate new object
-	 *
-	 * @param string $classname name of the class
-	 * @return object
-	 *
-	 */
 	function provide($classname){
 		$args = array();
 		foreach(self::getDependencyRequirements($classname) as $arg){
@@ -65,15 +50,12 @@ class Injector{
 	}
 
 
-	/**
-	 * Lazi method call
-	 *
-	 * @param object $instance instance of a class
-	 * @param string $method method to be called
-	 * @return mixed
-	 *
-	 */
-	function callMethod($instance, $method){
+	function callMethod($classname, $method){
+		if (!is_object($classname))
+			$instance = $this->provide($classname);
+		else
+			$instance = $classname;
+
 		$args = array();
 		foreach(self::getDependencyRequirements($instance, $method) as $arg){
 			$args[] = $this->getDependency($arg);

@@ -6,7 +6,7 @@ namespace injector;
  * Handle Dependency Injections in Singleton-like clases.
  *
  */
-class Singleton{
+class SingletonInjector implements AbstractInjector{
 	private $_singletons = array();
 	private $_injector;
 
@@ -22,15 +22,11 @@ class Singleton{
 	}
 
 
-	/**
-	 * Lazi constructor call,
-	 *
-	 * e.g. instanciate new object
-	 *
-	 * @param string $classname name of the class
-	 * @return object
-	 *
-	 */
+	function & specifications(){
+		return $this->_injector->specifications();
+	}
+
+
 	function provide($classname){
 		if (! isset($this->_singletons[$classname]))
 			$this->_singletons[$classname] = $this->_injector->provide($classname);
@@ -39,14 +35,6 @@ class Singleton{
 	}
 
 
-	/**
-	 * Create Singleton-like instance, then Lazi method call
-	 *
-	 * @param string $classname name of the class
-	 * @param string $method method to be called
-	 * @return mixed
-	 *
-	 */
 	function callMethod($classname, $method){
 		$instance = $this->provide($classname);
 
