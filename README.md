@@ -247,7 +247,8 @@ class MySQLDatabase{
 
 // bind factory to $db
 $conf->bind("db",	new injector\BindFactory(function(){
-	return new MySQLDatabase();
+	// it is your responsibility to pass arguments somehow
+	return new MySQLDatabase("localhost", "admin", "secret");
 });
 ~~~
 
@@ -256,7 +257,8 @@ $conf->bind("db",	new injector\BindFactory(function(){
 ~~~php
 class MySQLDatabaseFactory{
 	static function getInstance(){
-		return new MySQLDatabase();
+		// it is your responsibility to pass arguments somehow
+		return new MySQLDatabase("localhost", "admin", "secret");
 	}
 }
 
@@ -269,7 +271,8 @@ $conf->bind("db",	new injector\BindFactory("MySQLDatabaseFactory::getInstance");
 ~~~php
 class MySQLDatabaseFactory{
 	function getInstance(){
-		return new MySQLDatabase();
+		// it is your responsibility to pass arguments somehow
+		return new MySQLDatabase("localhost", "admin", "secret");
 	}
 }
 

@@ -74,9 +74,12 @@ $conf->bind("port", new \injector\BindValue(80));
 
 $injector = new \injector\Injector( /* array($conf) */ );
 
-$injector->specifications()["fake"] = "bla?!?";	// put fake data first
-$injector->specifications()["fake"] = null;	// put null
-$injector->specifications()["conf"] = $conf;	// put real thing
+$injector->specifications()["fake1"] = "bla?!?";	// put fake data first
+$injector->specifications()["fake2"] = null;		// put null
+$injector->specifications()["conf"] = $conf;		// put real thing
+
+
+$sInjector = new \injector\Singleton($injector);
 
 
 // =============================================
@@ -88,7 +91,11 @@ assert($bla->name == 5);
 
 assert($injector->callMethod($bla, $method) == 123);
 
-assert($injector->provideAndCallMethod($classname, $method) == 123);
-assert($injector->provideAndCallMethod($classname, $method) == 123);
+
+// =============================================
+
+
+assert($sInjector->callMethod($classname, $method) == 123);
+assert($sInjector->callMethod($classname, $method) == 123);
 
 
