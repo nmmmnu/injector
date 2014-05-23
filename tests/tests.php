@@ -44,21 +44,28 @@ TestInjectorBind(new \injector\BindFactory(function(){ return 5; }), 5, true);
 
 
 class bla{
-	public $name = 5;
+	const RESULT = 123;
+
+	private $_id;
 
 	function __construct($host, $port){
+		$this->_id = uniqid();
+
 		printf("%s::__construct('%s', %d);\n", __CLASS__, $host, $port);
 	}
 
-	function someMethod($port, $host){
+	function process($port, $host){
 		printf("%s::someMethod('%s', %d);\n", __CLASS__, $host, $port);
-		return 123;
+		return self::RESULT;
+	}
+
+	function getID(){
+		return $this->_id;
 	}
 }
 
 
 $classname = __NAMESPACE__ . "\\" . "bla";
-$method = "someMethod";
 
 
 // =============================================
@@ -82,33 +89,45 @@ $sInjector = new \injector\SingletonInjector($injector);
 // =============================================
 
 
-echo "\nTesting Injector::provide\n";
+echo "\n";
+echo "Testing Injector::provide\n";
 
 $bla1 = $injector->provide($classname);
 $bla2 = $injector->provide($classname);
 
+// must provide two different objects
 assert($bla1 !== $bla2);
 
-$bla = $bla1;
-assert($bla->name == 5);
+// check what it provided
+assert(get_class($bla1) === $classname);
 
-echo "\nTesting Injector::call with object\n";
-assert($injector->callMethod($bla, $method) == 123);
 
-echo "\nTesting Injector::call with string\n";
-assert($injector->callMethod($classname, $method) == 123);
-assert($injector->callMethod($classname, $method) == 123);
+echo "\n";
+echo "Testing Injector::call with object\n";
+assert($injector->callMethod($bla1, "process") == bla::RESULT);
+
+
+echo "\n";
+echo "Testing Injector::call with string\n";
+assert($injector->callMethod($classname, "process") == bla::RESULT);
+
+// must provide two different objects
+assert($injector->callMethod($classname, "getID") !== $injector->callMethod($classname, "getID"));
 
 
 // =============================================
 
 
-echo "\nTesting SingletonInjector::call with string\n";
+echo "\n";
+echo "Testing SingletonInjector::call with string\n";
 $bla1 = $sInjector->provide($classname);
 $bla2 = $sInjector->provide($classname);
+
+// must provide same object
 assert($bla1 === $bla2);
-assert($sInjector->callMethod($classname, $method) == 123);
-assert($sInjector->callMethod($classname, $method) == 123);
+
+// must provide same object
+assert($sInjector->callMethod($classname, "getID") == $sInjector->callMethod($classname, "getID"));
 
 
 // =============================================
