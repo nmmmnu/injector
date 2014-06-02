@@ -49,7 +49,8 @@ class bla{
 	private $_id;
 
 	function __construct($host, $port){
-		$this->_id = uniqid();
+		// add rand(), because test fail on Windows
+		$this->_id = uniqid() . rand();
 
 		printf("%s::__construct('%s', %d);\n", __CLASS__, $host, $port);
 	}
