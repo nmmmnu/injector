@@ -9,6 +9,8 @@ spl_autoload_register(
 		if ($parts[0] != __NAMESPACE__)
 			return;
 
+		unset($parts[0]);
+
 		$file = implode("/", $parts) . ".php";
 
 		$file = dirname(__FILE__) . "/" . $file;
