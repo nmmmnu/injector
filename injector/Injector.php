@@ -131,5 +131,41 @@ class Injector implements AbstractInjector{
 
 		return $params;
 	}
+
+
+	static function test(){
+		$conf = new Configuration();
+		$conf->bind("host", new BindValue("localhost"));
+		$conf->bind("port", new BindValue(80));
+
+
+		$injector = new Injector( /* array($conf) */ );
+
+		$injector->specifications()["fake1"] = "bla?!?";	// put fake data first
+		$injector->specifications()["fake2"] = null;		// put null
+		$injector->specifications()["conf"] = $conf;		// put real thing
+
+
+		$classname = __NAMESPACE__ . "\\tests\\TestClass";
+
+		$bla1 = $injector->provide($classname);
+		$bla2 = $injector->provide($classname);
+
+		// must provide two different objects
+		assert($bla1 !== $bla2);
+
+		// check what class it provided
+		assert(get_class($bla1) === $classname);
+
+		// check if callMethod works
+		// $bla1 is an object
+		assert($injector->callMethod($bla1, "process") == $classname::RESULT);
+
+		// $classname is a string
+		assert($injector->callMethod($classname, "process") == $classname::RESULT);
+
+		// must provide two different objects
+		assert($injector->callMethod($classname, "getID") !== $injector->callMethod($classname, "getID"));
+	}
 }
 

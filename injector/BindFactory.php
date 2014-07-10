@@ -40,5 +40,10 @@ namespace injector;
 	function isFinal(){
 		return $this->_final;
 	}
+
+
+	static function test(){
+		return tests\TestInjector::testBind(new self(function(){ return 5; }), 5, true);
+	}
 }
 

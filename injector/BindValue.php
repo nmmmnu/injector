@@ -36,5 +36,10 @@ class BindValue implements Bind{
 	function isFinal(){
 		return true;
 	}
+
+
+	static function test(){
+		return tests\TestInjector::testBind(new self(5), 5, false);
+	}
 }
 
