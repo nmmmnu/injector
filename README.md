@@ -300,3 +300,15 @@ $conf->bind("foo",	new injector\BindFileObject(__DIR__ . "/Foo.php"));
 ~~~
 
 # [eof]
+
+
+
+## Unit tests
+
+Unit tests use nu_test now.
+
+You need to fetch https://github.com/nmmmnu/nu_test
+Then run something like:
+
+php ../../nu_test/Tester.php __autoload.php injector/
+
