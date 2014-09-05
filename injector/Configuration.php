@@ -35,18 +35,5 @@ class Configuration{
 
 		return $this->_store[$from];
 	}
-
-
-	static function test(){
-		$conf = new self();
-
-		$bind = new BindValue("bla");
-
-		$conf->bind("bla", $bind);
-
-		assert($conf->get("bla") === $bind );
-		assert($conf->get("nonexistent") === null);
-	}
-
 }
 

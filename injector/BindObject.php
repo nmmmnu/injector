@@ -39,10 +39,5 @@ class BindObject implements Bind{
 	function isFinal(){
 		return false;
 	}
-
-
-	static function test(){
-		return tests\TestInjector::testBind(new self("bla"), "bla", true);
-	}
 }
 

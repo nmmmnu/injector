@@ -86,9 +86,5 @@ class BindFileObject implements Bind{
 		return false;
 	}
 
-
-	static function test(){
-		return tests\TestInjector::testBind(new self(__DIR__ . "/tests/data/data_testclass.php5"), "injector\\tests\\data\\testclass", true);
-	}
 }
 
