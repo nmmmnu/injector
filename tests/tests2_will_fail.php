@@ -1,7 +1,7 @@
 <?
 namespace tests;
 
-require_once __DIR__ . "/../__autoload.php";
+require_once __DIR__ . "/../injector/__autoload.php";
 
 // =============================================
 
