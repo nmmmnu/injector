@@ -1,6 +1,4 @@
 <?
-require_once __DIR__ . "/../__autoload.php";
-
 
 function formater($level, $class, $id){
 	$sp = str_repeat("> ", $level);
@@ -122,8 +120,12 @@ class Customer{
 	}
 }
 
+// =============================================
+
+require_once __DIR__ . "/../injector/__autoload.php";
 
 // =============================================
+
 
 
 function getConfigurationDevelopment(){
